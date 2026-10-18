@@ -94,3 +94,13 @@ func TestMultiSet_Size(t *testing.T) {
 	ms.Add(3)
 	assert.Equal(t, 4, ms.Size())
 }
+
+func TestMultiSet_ZeroValue(t *testing.T) {
+	var ms MultiSet[int]
+	assert.Equal(t, 0, ms.Count(1))
+	assert.Equal(t, 0, ms.Remove(1))
+	assert.Equal(t, 0, ms.Size())
+	assert.Equal(t, 1, ms.Add(1))
+	assert.Equal(t, 2, ms.Add(1))
+	assert.Equal(t, 2, ms.Size())
+}

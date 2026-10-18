@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func makeDeque() Deque[int] {
+func makeDeque() *Deque[int] {
 	d := NewDeque[int]()
 	d.AddFirst(1)
 	d.AddLast(2)
@@ -59,4 +59,25 @@ func TestDeque_IsEmpty(t *testing.T) {
 	d.RemoveLast()
 	d.RemoveFirst()
 	assert.True(t, d.IsEmpty())
+}
+
+func TestDeque_ZeroValue(t *testing.T) {
+	var d Deque[int]
+	assert.True(t, d.IsEmpty())
+	assert.Equal(t, 0, d.Size())
+	for _, f := range []func() (int, bool){d.PeekFirst, d.PeekLast, d.RemoveFirst, d.RemoveLast} {
+		v, ok := f()
+		assert.False(t, ok)
+		assert.Equal(t, 0, v)
+	}
+	d.Visit(func(int) { t.Error("visited an element of an empty Deque") })
+
+	d.AddLast(2)
+	d.AddFirst(1)
+	var got []int
+	d.Visit(func(v int) { got = append(got, v) })
+	assert.Equal(t, []int{1, 2}, got)
+	v, ok := d.RemoveLast()
+	assert.True(t, ok)
+	assert.Equal(t, 2, v)
 }

@@ -6,7 +6,7 @@ type dequeNode[T any] struct {
 	next *dequeNode[T]
 }
 
-// Deque is a double ended queue data structure.
+// Deque is a double ended queue data structure. Its zero value is an empty Deque, ready to use.
 type Deque[T any] struct {
 	head *dequeNode[T]
 	tail *dequeNode[T]
@@ -14,16 +14,26 @@ type Deque[T any] struct {
 }
 
 // NewDeque constructs a new Deque of the given type.
-func NewDeque[T any]() Deque[T] {
-	head := dequeNode[T]{}
-	tail := dequeNode[T]{}
-	head.next = &tail
-	tail.prev = &head
-	return Deque[T]{&head, &tail, 0}
+func NewDeque[T any]() *Deque[T] {
+	d := &Deque[T]{}
+	d.lazyInit()
+	return d
+}
+
+// lazyInit links the head and tail sentinels on a zero Deque's first add. Methods that only read
+// check size first, so they never reach the nil sentinels of a Deque never added to.
+func (d *Deque[T]) lazyInit() {
+	if d.head != nil {
+		return
+	}
+	d.head, d.tail = &dequeNode[T]{}, &dequeNode[T]{}
+	d.head.next = d.tail
+	d.tail.prev = d.head
 }
 
 // AddFirst adds an element to the head of the Deque.
 func (d *Deque[T]) AddFirst(val T) {
+	d.lazyInit()
 	n := dequeNode[T]{val, d.head, d.head.next}
 	d.head.next.prev = &n
 	d.head.next = &n
@@ -32,6 +42,7 @@ func (d *Deque[T]) AddFirst(val T) {
 
 // AddLast adds an element to the tail of the Deque.
 func (d *Deque[T]) AddLast(val T) {
+	d.lazyInit()
 	n := dequeNode[T]{val, d.tail.prev, d.tail}
 	d.tail.prev.next = &n
 	d.tail.prev = &n
@@ -94,6 +105,9 @@ func (d *Deque[T]) IsEmpty() bool {
 
 // Visit executes func f on every element of the Deque.
 func (d *Deque[T]) Visit(f func(T)) {
+	if d.size == 0 {
+		return
+	}
 	n := d.head.next
 	for n != d.tail {
 		f(n.val)

@@ -140,3 +140,14 @@ func TestSet_ConstructWithItems(t *testing.T) {
 	assert.True(t, s.Contains(4))
 	assert.True(t, s.Contains(6))
 }
+
+func TestSet_ZeroValue(t *testing.T) {
+	var s Set[int]
+	assert.False(t, s.Contains(1))
+	assert.False(t, s.Remove(1))
+	assert.Equal(t, 0, s.Size())
+	assert.Empty(t, s.Slice())
+	assert.True(t, s.Add(1))
+	assert.True(t, s.Contains(1))
+	assert.Equal(t, 1, s.Size())
+}

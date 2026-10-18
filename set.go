@@ -5,16 +5,16 @@ import (
 	"slices"
 )
 
-// Set provides a set type.
+// Set provides a set type. Its zero value is an empty set, ready to use.
 type Set[T comparable] struct {
 	// Idiomatic approach, struct{} does not require an allocation
 	// and communicates no meaning.
 	items map[T]struct{}
 }
 
-// NewSet constructs and returns a set of the given type.
-func NewSet[T comparable](items ...T) Set[T] {
-	s := Set[T]{make(map[T]struct{})}
+// NewSet constructs and returns a set of the given type, holding items.
+func NewSet[T comparable](items ...T) *Set[T] {
+	s := &Set[T]{}
 	s.AddAll(items...)
 	return s
 }
@@ -28,6 +28,9 @@ func (s *Set[T]) Contains(i T) bool {
 // Add adds the given item to the Set and returns whether the item was added.
 // If the item was already present, false is returned.
 func (s *Set[T]) Add(i T) bool {
+	if s.items == nil {
+		s.items = make(map[T]struct{})
+	}
 	_, ok := s.items[i]
 	s.items[i] = struct{}{}
 	return !ok

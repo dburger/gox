@@ -1,6 +1,6 @@
 package gocoll
 
-// MultiSet provides a map that keeps counts of elements.
+// MultiSet provides a map that keeps counts of elements. Its zero value is empty, ready to use.
 type MultiSet[T comparable] struct {
 	counts map[T]int
 	size   int
@@ -13,6 +13,9 @@ func NewMultiSet[T comparable]() *MultiSet[T] {
 
 // Add adds an element to the multiset and returns the new count.
 func (ms *MultiSet[T]) Add(val T) int {
+	if ms.counts == nil {
+		ms.counts = make(map[T]int)
+	}
 	count, ok := ms.counts[val]
 	if !ok {
 		count = 1
