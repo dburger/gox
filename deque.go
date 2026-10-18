@@ -86,7 +86,7 @@ func (d *Deque[T]) PeekFirst() (T, bool) {
 	return d.head.next.val, true
 }
 
-// PeekLast returns the head of the Deque.
+// PeekLast returns the tail of the Deque.
 // If the Deque is empty, a zero element and false is returned.
 func (d *Deque[T]) PeekLast() (T, bool) {
 	if d.size == 0 {
