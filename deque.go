@@ -8,7 +8,9 @@ type dequeNode[T any] struct {
 	next *dequeNode[T]
 }
 
-// Deque is a double ended queue data structure. Its zero value is an empty Deque, ready to use.
+// Deque is a double-ended queue: values are added and removed at either end in constant time. Its
+// zero value is an empty Deque, ready to use. A Deque shouldn't be copied after first use: copies
+// share their elements but not their Len.
 type Deque[T any] struct {
 	head *dequeNode[T]
 	tail *dequeNode[T]

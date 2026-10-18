@@ -5,7 +5,8 @@ import (
 	"maps"
 )
 
-// Set provides a set type. Its zero value is an empty set, ready to use.
+// Set is a set of comparable values, each held at most once. Its zero value is an empty Set,
+// ready to use. A Set shouldn't be copied after first use: copies share their items.
 type Set[T comparable] struct {
 	// Idiomatic approach, struct{} does not require an allocation
 	// and communicates no meaning.

@@ -1,6 +1,8 @@
 package gocoll
 
-// MultiSet provides a map that keeps counts of elements. Its zero value is empty, ready to use.
+// MultiSet is a set that counts how many times each value is in it, sometimes called a bag. Its
+// zero value is an empty MultiSet, ready to use. A MultiSet shouldn't be copied after first use:
+// copies share their counts but not their Len.
 type MultiSet[T comparable] struct {
 	counts map[T]int
 	size   int
