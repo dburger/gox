@@ -8,49 +8,38 @@ type MultiSet[T comparable] struct {
 
 // NewMultiSet constructs and returns a MultiSet of the given type.
 func NewMultiSet[T comparable]() *MultiSet[T] {
-	return &MultiSet[T]{make(map[T]int), 0}
+	return &MultiSet[T]{}
 }
 
-// Add adds an element to the multiset and returns the new count.
+// Add adds an element to the MultiSet and returns its new count.
 func (ms *MultiSet[T]) Add(val T) int {
 	if ms.counts == nil {
 		ms.counts = make(map[T]int)
 	}
-	count, ok := ms.counts[val]
-	if !ok {
-		count = 1
-	} else {
-		count++
-	}
-	ms.counts[val] = count
-	ms.size += 1
-	return count
+	ms.counts[val]++
+	ms.size++
+	return ms.counts[val]
 }
 
-// Remove removes the value from the MultiSet and returns the new count.
+// Remove removes one of the value from the MultiSet and returns its new count. Removing a value
+// not in the MultiSet changes nothing and returns 0.
 func (ms *MultiSet[T]) Remove(val T) int {
-	count, ok := ms.counts[val]
-	if !ok {
-		// Nothing to do, not there.
-	} else {
-		ms.size--
-		count--
-		if count == 0 {
-			delete(ms.counts, val)
-		} else {
-			ms.counts[val] = count
-		}
+	count := ms.counts[val]
+	if count == 0 {
+		return 0
 	}
-	return count
+	ms.size--
+	if count == 1 {
+		delete(ms.counts, val)
+		return 0
+	}
+	ms.counts[val] = count - 1
+	return count - 1
 }
 
-// Count returns the count of value in the MultiSet.
+// Count returns the count of value in the MultiSet: 0 for a value not in it.
 func (ms *MultiSet[T]) Count(val T) int {
-	count, ok := ms.counts[val]
-	if !ok {
-		count = 0
-	}
-	return count
+	return ms.counts[val]
 }
 
 // Len returns the number of elements in the MultiSet, each counted as many times as it was added.
