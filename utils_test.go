@@ -14,18 +14,18 @@ func TestFilter(t *testing.T) {
 	assert.Equal(t, expected, filtered)
 }
 
-func TestRepeatFunc(t *testing.T) {
+func TestGenerate(t *testing.T) {
 	expected := []int{42, 42, 42, 42, 42, 42}
-	fortyTwos := RepeatFunc(func() int { return 42 }, 6)
+	fortyTwos := Generate(func() int { return 42 }, 6)
 
 	assert.Equal(t, expected, fortyTwos)
 }
 
-func TestMerge(t *testing.T) {
+func TestMergeMaps(t *testing.T) {
 	map1 := map[string]string{"key1": "value1", "key2": "value2"}
 	map2 := map[string]string{"key2": "value3", "key4": "value4"}
 	map3 := map[string]string{"key5": "value5"}
-	merged := Merge(map1, map2, map3)
+	merged := MergeMaps(map1, map2, map3)
 	assert.Equal(t, 4, len(merged))
 	assert.Equal(t, "value1", merged["key1"])
 	assert.Equal(t, "value3", merged["key2"])
@@ -34,10 +34,10 @@ func TestMerge(t *testing.T) {
 	// TODO(dburger): could assert original maps unchanged
 }
 
-func TestUnique(t *testing.T) {
+func TestDistinct(t *testing.T) {
 	slice := []int{2, 1, 2, 2, 3, 1, 4, 4, 5}
 	expected := []int{2, 1, 3, 4, 5}
-	assert.Equal(t, expected, Unique(slice))
+	assert.Equal(t, expected, Distinct(slice))
 }
 
 func TestPartition(t *testing.T) {

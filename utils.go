@@ -31,8 +31,9 @@ func Reduce[T, U any](s []T, f func(U, T) U, initial U) U {
 	return acc
 }
 
-// RepeatFunc returns a slice of the given length with elements computed by a function.
-func RepeatFunc[T any](f func() T, n int) []T {
+// Generate returns a slice of n elements, each a new call of f. Unlike slices.Repeat, which
+// copies one value, each element is f's own: a fresh map, pointer or accumulator.
+func Generate[T any](f func() T, n int) []T {
 	var res = make([]T, n)
 	for i := 0; i < n; i++ {
 		res[i] = f()
@@ -40,9 +41,9 @@ func RepeatFunc[T any](f func() T, n int) []T {
 	return res
 }
 
-// Merge combines multiple maps into a new map. Values from later maps
+// MergeMaps combines multiple maps into a new map. Values from later maps
 // will overwrite values from earlier maps with the same key.
-func Merge[K comparable, V any](ms ...map[K]V) map[K]V {
+func MergeMaps[K comparable, V any](ms ...map[K]V) map[K]V {
 	res := make(map[K]V)
 	for _, m := range ms {
 		for k, v := range m {
@@ -52,9 +53,9 @@ func Merge[K comparable, V any](ms ...map[K]V) map[K]V {
 	return res
 }
 
-// Unique returns the elements of s with each kept once, where it first appears, in a new slice.
+// Distinct returns the elements of s with each kept once, where it first appears, in a new slice.
 // Unlike slices.Compact, duplicates needn't be next to each other.
-func Unique[T comparable](s []T) []T {
+func Distinct[T comparable](s []T) []T {
 	seen := make(map[T]struct{})
 	var res []T
 	for _, v := range s {
