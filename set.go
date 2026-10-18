@@ -1,8 +1,8 @@
 package gocoll
 
 import (
+	"iter"
 	"maps"
-	"slices"
 )
 
 // Set provides a set type. Its zero value is an empty set, ready to use.
@@ -53,12 +53,13 @@ func (s *Set[T]) Remove(i T) bool {
 	return ok
 }
 
-// Size returns a count of the items in the Set.
-func (s *Set[T]) Size() int {
+// Len returns the number of items in the Set.
+func (s *Set[T]) Len() int {
 	return len(s.items)
 }
 
-// Slice returns the contents of the set as a slice.
-func (s *Set[T]) Slice() []T {
-	return slices.Collect(maps.Keys(s.items))
+// All returns an iterator over the Set's items, in no particular order: for item := range s.All().
+// slices.Collect(s.All()) gives them as a slice.
+func (s *Set[T]) All() iter.Seq[T] {
+	return maps.Keys(s.items)
 }

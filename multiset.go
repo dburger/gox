@@ -53,6 +53,7 @@ func (ms *MultiSet[T]) Count(val T) int {
 	return count
 }
 
-func (ms *MultiSet[T]) Size() int {
+// Len returns the number of elements in the MultiSet, each counted as many times as it was added.
+func (ms *MultiSet[T]) Len() int {
 	return ms.size
 }

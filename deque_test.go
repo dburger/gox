@@ -1,6 +1,7 @@
 package gocoll
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -38,7 +39,7 @@ func TestDeque_RemoveFirst(t *testing.T) {
 	val, ok := d.RemoveFirst()
 	assert.True(t, ok)
 	assert.Equal(t, 1, val)
-	assert.Equal(t, 4, d.Size())
+	assert.Equal(t, 4, d.Len())
 }
 
 func TestDeque_RemoveLast(t *testing.T) {
@@ -46,7 +47,7 @@ func TestDeque_RemoveLast(t *testing.T) {
 	val, ok := d.RemoveLast()
 	assert.True(t, ok)
 	assert.Equal(t, 5, val)
-	assert.Equal(t, 4, d.Size())
+	assert.Equal(t, 4, d.Len())
 }
 
 func TestDeque_IsEmpty(t *testing.T) {
@@ -54,7 +55,7 @@ func TestDeque_IsEmpty(t *testing.T) {
 	assert.False(t, d.IsEmpty())
 	d.RemoveFirst()
 	d.RemoveLast()
-	assert.Equal(t, 3, d.Size())
+	assert.Equal(t, 3, d.Len())
 	d.RemoveFirst()
 	d.RemoveLast()
 	d.RemoveFirst()
@@ -64,20 +65,33 @@ func TestDeque_IsEmpty(t *testing.T) {
 func TestDeque_ZeroValue(t *testing.T) {
 	var d Deque[int]
 	assert.True(t, d.IsEmpty())
-	assert.Equal(t, 0, d.Size())
+	assert.Equal(t, 0, d.Len())
 	for _, f := range []func() (int, bool){d.PeekFirst, d.PeekLast, d.RemoveFirst, d.RemoveLast} {
 		v, ok := f()
 		assert.False(t, ok)
 		assert.Equal(t, 0, v)
 	}
-	d.Visit(func(int) { t.Error("visited an element of an empty Deque") })
+	for range d.All() {
+		t.Error("iterated over an element of an empty Deque")
+	}
 
 	d.AddLast(2)
 	d.AddFirst(1)
-	var got []int
-	d.Visit(func(v int) { got = append(got, v) })
-	assert.Equal(t, []int{1, 2}, got)
+	assert.Equal(t, []int{1, 2}, slices.Collect(d.All()))
 	v, ok := d.RemoveLast()
 	assert.True(t, ok)
 	assert.Equal(t, 2, v)
+}
+
+func TestDeque_All(t *testing.T) {
+	d := makeDeque()
+	assert.Equal(t, []int{1, 2, 3, 4, 5}, slices.Collect(d.All()))
+	var first []int
+	for v := range d.All() {
+		first = append(first, v)
+		if len(first) == 2 {
+			break
+		}
+	}
+	assert.Equal(t, []int{1, 2}, first)
 }

@@ -1,5 +1,7 @@
 package gocoll
 
+import "iter"
+
 type dequeNode[T any] struct {
 	val  T
 	prev *dequeNode[T]
@@ -93,8 +95,8 @@ func (d *Deque[T]) PeekLast() (T, bool) {
 	return d.tail.prev.val, true
 }
 
-// Size returns the number of elements in the Deque.
-func (d *Deque[T]) Size() int {
+// Len returns the number of elements in the Deque.
+func (d *Deque[T]) Len() int {
 	return d.size
 }
 
@@ -103,14 +105,16 @@ func (d *Deque[T]) IsEmpty() bool {
 	return d.size == 0
 }
 
-// Visit executes func f on every element of the Deque.
-func (d *Deque[T]) Visit(f func(T)) {
-	if d.size == 0 {
-		return
-	}
-	n := d.head.next
-	for n != d.tail {
-		f(n.val)
-		n = n.next
+// All returns an iterator over the Deque's elements, first to last: for v := range d.All().
+func (d *Deque[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		if d.size == 0 {
+			return
+		}
+		for n := d.head.next; n != d.tail; n = n.next {
+			if !yield(n.val) {
+				return
+			}
+		}
 	}
 }
