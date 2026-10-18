@@ -1,6 +1,7 @@
 package gocoll
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -51,4 +52,20 @@ func TestPartition_WhenEmpty(t *testing.T) {
 	pass, fail := Partition(slice, func(i int) bool { return i%2 == 0 })
 	assert.Nil(t, pass)
 	assert.Nil(t, fail)
+}
+
+func TestMap(t *testing.T) {
+	assert.Equal(t, []int{2, 4, 6, 8}, Map([]int{1, 2, 3, 4}, func(i int) int { return i * 2 }))
+	assert.Equal(t, []string{"1", "22"}, Map([]int{1, 22}, strconv.Itoa))
+	assert.Empty(t, Map([]int{}, strconv.Itoa))
+	assert.Empty(t, Map(nil, strconv.Itoa))
+}
+
+func TestReduce(t *testing.T) {
+	items := []int{1, 2, 3}
+	assert.Equal(t, 6, Reduce(items, func(a, b int) int { return a + b }, 0))
+	assert.Equal(t, 6, Reduce(items, func(a, b int) int { return a * b }, 1))
+	// The order is left to right, and the result's type can differ from the elements'.
+	assert.Equal(t, "x123", Reduce(items, func(acc string, i int) string { return acc + strconv.Itoa(i) }, "x"))
+	assert.Equal(t, 7, Reduce(nil, func(a, b int) int { return a + b }, 7))
 }

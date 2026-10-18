@@ -12,6 +12,25 @@ func Filter[T any](slice []T, f func(T) bool) []T {
 	return res
 }
 
+// Map returns a new slice holding f of each element of s, in order.
+func Map[T, U any](s []T, f func(T) U) []U {
+	res := make([]U, len(s))
+	for i, v := range s {
+		res[i] = f(v)
+	}
+	return res
+}
+
+// Reduce folds s into one value, starting from initial and combining in order:
+// f(f(f(initial, s[0]), s[1]), ...). With s empty, it returns initial.
+func Reduce[T, U any](s []T, f func(U, T) U, initial U) U {
+	acc := initial
+	for _, v := range s {
+		acc = f(acc, v)
+	}
+	return acc
+}
+
 // RepeatFunc returns a slice of the given length with elements computed by a function.
 func RepeatFunc[T any](f func() T, n int) []T {
 	var res = make([]T, n)
