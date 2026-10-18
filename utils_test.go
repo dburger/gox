@@ -1,8 +1,9 @@
 package gocoll
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var SAMPLE_MAP = map[string]string{
@@ -72,4 +73,10 @@ func TestMergeInto(t *testing.T) {
 	assert.Equal(t, "value4", map1["key4"])
 	assert.Equal(t, "value5", map1["key5"])
 	// TODO(dburger): could assert original maps unhanged
+}
+
+func TestUnique(t *testing.T) {
+	slice := []int{2, 1, 2, 2, 3, 1, 4, 4, 5}
+	expected := []int{2, 1, 3, 4, 5}
+	assert.Equal(t, expected, Unique(slice))
 }

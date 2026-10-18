@@ -71,3 +71,15 @@ func MergeInto[K comparable, V any](dest map[K]V, maps ...map[K]V) {
 		}
 	}
 }
+
+func Unique[T comparable](s []T) []T {
+	seen := make(map[T]struct{})
+	var res []T
+	for _, v := range s {
+		if _, ok := seen[v]; !ok {
+			seen[v] = struct{}{}
+			res = append(res, v)
+		}
+	}
+	return res
+}
