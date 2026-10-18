@@ -1,4 +1,6 @@
-package gocoll
+// Package slicesx provides slice functions the standard library's slices package doesn't: Map,
+// Filter, Reduce, Partition, Distinct and Generate.
+package slicesx
 
 // Filter returns the elements of slice that f holds for, in order, in a new slice. Unlike
 // slices.DeleteFunc, it leaves slice as it was.
@@ -37,18 +39,6 @@ func Generate[T any](f func() T, n int) []T {
 	var res = make([]T, n)
 	for i := 0; i < n; i++ {
 		res[i] = f()
-	}
-	return res
-}
-
-// MergeMaps combines multiple maps into a new map. Values from later maps
-// will overwrite values from earlier maps with the same key.
-func MergeMaps[K comparable, V any](ms ...map[K]V) map[K]V {
-	res := make(map[K]V)
-	for _, m := range ms {
-		for k, v := range m {
-			res[k] = v
-		}
 	}
 	return res
 }

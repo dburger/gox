@@ -1,4 +1,4 @@
-package gocoll
+package coll
 
 import (
 	"testing"
