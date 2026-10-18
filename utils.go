@@ -1,7 +1,7 @@
 package gocoll
 
-// Supposedly slices.Repeat coming in 1.23.
-
+// Filter returns the elements of slice that f holds for, in order, in a new slice. Unlike
+// slices.DeleteFunc, it leaves slice as it was.
 func Filter[T any](slice []T, f func(T) bool) []T {
 	var res []T
 	for _, v := range slice {
@@ -21,40 +21,11 @@ func RepeatFunc[T any](f func() T, n int) []T {
 	return res
 }
 
-// RepeatValues returns a slice of the given length with elements of the given value.
-func RepeatValues[T any](val T, n int) []T {
-	var res = make([]T, n)
-	for i := 0; i < n; i++ {
-		res[i] = val
-	}
-	return res
-}
-
-// MapKeys returns a slice of the keys in the map.
-// Alternatively available from golang.org/x/exp/maps.
-func MapKeys[T comparable, U any](m map[T]U) []T {
-	keys := make([]T, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-// MapValues returns a slice of the values in the map.
-// Alternatively available from golang.org/x/exp/maps.
-func MapValues[T comparable, U any](m map[T]U) []U {
-	values := make([]U, 0, len(m))
-	for _, v := range m {
-		values = append(values, v)
-	}
-	return values
-}
-
 // Merge combines multiple maps into a new map. Values from later maps
 // will overwrite values from earlier maps with the same key.
-func Merge[K comparable, V any](maps ...map[K]V) map[K]V {
+func Merge[K comparable, V any](ms ...map[K]V) map[K]V {
 	res := make(map[K]V)
-	for _, m := range maps {
+	for _, m := range ms {
 		for k, v := range m {
 			res[k] = v
 		}
@@ -62,16 +33,8 @@ func Merge[K comparable, V any](maps ...map[K]V) map[K]V {
 	return res
 }
 
-// MergeInto merges multiple maps into the destination map. Values from later maps
-// will overwrite values from earlier maps with the same key.
-func MergeInto[K comparable, V any](dest map[K]V, maps ...map[K]V) {
-	for _, m := range maps {
-		for k, v := range m {
-			dest[k] = v
-		}
-	}
-}
-
+// Unique returns the elements of s with each kept once, where it first appears, in a new slice.
+// Unlike slices.Compact, duplicates needn't be next to each other.
 func Unique[T comparable](s []T) []T {
 	seen := make(map[T]struct{})
 	var res []T
@@ -82,4 +45,16 @@ func Unique[T comparable](s []T) []T {
 		}
 	}
 	return res
+}
+
+// Partition splits s into the elements pred holds for and the rest, each in s's order.
+func Partition[T any](s []T, pred func(T) bool) (pass, fail []T) {
+	for _, v := range s {
+		if pred(v) {
+			pass = append(pass, v)
+		} else {
+			fail = append(fail, v)
+		}
+	}
+	return pass, fail
 }

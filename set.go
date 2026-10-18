@@ -1,5 +1,10 @@
 package gocoll
 
+import (
+	"maps"
+	"slices"
+)
+
 // Set provides a set type.
 type Set[T comparable] struct {
 	// Idiomatic approach, struct{} does not require an allocation
@@ -52,5 +57,5 @@ func (s *Set[T]) Size() int {
 
 // Slice returns the contents of the set as a slice.
 func (s *Set[T]) Slice() []T {
-	return MapKeys(s.items)
+	return slices.Collect(maps.Keys(s.items))
 }
