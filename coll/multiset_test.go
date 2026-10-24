@@ -3,32 +3,32 @@ package coll
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/dburger/gox/internal/testutil"
 )
 
 func TestMultiSet_Add(t *testing.T) {
 	ms := NewMultiSet[int]()
 	count := ms.Add(1)
-	assert.Equal(t, 1, count)
-	assert.Equal(t, 1, ms.Count(1))
-	assert.Equal(t, 0, ms.Count(2))
-	assert.Equal(t, 0, ms.Count(3))
+	testutil.Equal(t, count, 1)
+	testutil.Equal(t, ms.Count(1), 1)
+	testutil.Equal(t, ms.Count(2), 0)
+	testutil.Equal(t, ms.Count(3), 0)
 	count = ms.Add(2)
-	assert.Equal(t, 1, count)
-	assert.Equal(t, 1, ms.Count(1))
-	assert.Equal(t, 1, ms.Count(2))
-	assert.Equal(t, 0, ms.Count(3))
+	testutil.Equal(t, count, 1)
+	testutil.Equal(t, ms.Count(1), 1)
+	testutil.Equal(t, ms.Count(2), 1)
+	testutil.Equal(t, ms.Count(3), 0)
 	count = ms.Add(2)
-	assert.Equal(t, 2, count)
-	assert.Equal(t, 1, ms.Count(1))
-	assert.Equal(t, 2, ms.Count(2))
-	assert.Equal(t, 0, ms.Count(3))
+	testutil.Equal(t, count, 2)
+	testutil.Equal(t, ms.Count(1), 1)
+	testutil.Equal(t, ms.Count(2), 2)
+	testutil.Equal(t, ms.Count(3), 0)
 	count = ms.Add(3)
-	assert.Equal(t, 1, count)
-	assert.Equal(t, 1, ms.Count(1))
-	assert.Equal(t, 2, ms.Count(2))
-	assert.Equal(t, 1, ms.Count(3))
-	assert.Equal(t, 0, ms.Count(4))
+	testutil.Equal(t, count, 1)
+	testutil.Equal(t, ms.Count(1), 1)
+	testutil.Equal(t, ms.Count(2), 2)
+	testutil.Equal(t, ms.Count(3), 1)
+	testutil.Equal(t, ms.Count(4), 0)
 }
 
 func TestMultiSet_Remove(t *testing.T) {
@@ -38,31 +38,31 @@ func TestMultiSet_Remove(t *testing.T) {
 	ms.Add(2)
 	ms.Add(3)
 
-	assert.Equal(t, 4, ms.Len())
+	testutil.Equal(t, ms.Len(), 4)
 
 	count := ms.Remove(4)
-	assert.Equal(t, 0, count)
-	assert.Equal(t, 4, ms.Len())
+	testutil.Equal(t, count, 0)
+	testutil.Equal(t, ms.Len(), 4)
 
 	count = ms.Remove(3)
-	assert.Equal(t, 0, count)
-	assert.Equal(t, 3, ms.Len())
+	testutil.Equal(t, count, 0)
+	testutil.Equal(t, ms.Len(), 3)
 
 	count = ms.Remove(2)
-	assert.Equal(t, 1, count)
-	assert.Equal(t, 2, ms.Len())
+	testutil.Equal(t, count, 1)
+	testutil.Equal(t, ms.Len(), 2)
 
 	count = ms.Remove(2)
-	assert.Equal(t, 0, count)
-	assert.Equal(t, 1, ms.Len())
+	testutil.Equal(t, count, 0)
+	testutil.Equal(t, ms.Len(), 1)
 
 	count = ms.Remove(2)
-	assert.Equal(t, 0, count)
-	assert.Equal(t, 1, ms.Len())
+	testutil.Equal(t, count, 0)
+	testutil.Equal(t, ms.Len(), 1)
 
 	count = ms.Remove(1)
-	assert.Equal(t, 0, count)
-	assert.Equal(t, 0, ms.Len())
+	testutil.Equal(t, count, 0)
+	testutil.Equal(t, ms.Len(), 0)
 }
 
 func TestMultiSet_Count(t *testing.T) {
@@ -72,35 +72,35 @@ func TestMultiSet_Count(t *testing.T) {
 	ms.Add(2)
 	ms.Add(3)
 
-	assert.Equal(t, 1, ms.Count(1))
-	assert.Equal(t, 2, ms.Count(2))
-	assert.Equal(t, 1, ms.Count(3))
-	assert.Equal(t, 0, ms.Count(4))
+	testutil.Equal(t, ms.Count(1), 1)
+	testutil.Equal(t, ms.Count(2), 2)
+	testutil.Equal(t, ms.Count(3), 1)
+	testutil.Equal(t, ms.Count(4), 0)
 }
 
 func TestMultiSet_Size(t *testing.T) {
 	ms := NewMultiSet[int]()
-	assert.Equal(t, 0, ms.Len())
+	testutil.Equal(t, ms.Len(), 0)
 
 	ms.Add(1)
-	assert.Equal(t, 1, ms.Len())
+	testutil.Equal(t, ms.Len(), 1)
 
 	ms.Add(2)
-	assert.Equal(t, 2, ms.Len())
+	testutil.Equal(t, ms.Len(), 2)
 
 	ms.Add(2)
-	assert.Equal(t, 3, ms.Len())
+	testutil.Equal(t, ms.Len(), 3)
 
 	ms.Add(3)
-	assert.Equal(t, 4, ms.Len())
+	testutil.Equal(t, ms.Len(), 4)
 }
 
 func TestMultiSet_ZeroValue(t *testing.T) {
 	var ms MultiSet[int]
-	assert.Equal(t, 0, ms.Count(1))
-	assert.Equal(t, 0, ms.Remove(1))
-	assert.Equal(t, 0, ms.Len())
-	assert.Equal(t, 1, ms.Add(1))
-	assert.Equal(t, 2, ms.Add(1))
-	assert.Equal(t, 2, ms.Len())
+	testutil.Equal(t, ms.Count(1), 0)
+	testutil.Equal(t, ms.Remove(1), 0)
+	testutil.Equal(t, ms.Len(), 0)
+	testutil.Equal(t, ms.Add(1), 1)
+	testutil.Equal(t, ms.Add(1), 2)
+	testutil.Equal(t, ms.Len(), 2)
 }

@@ -3,7 +3,7 @@ package mapsx
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/dburger/gox/internal/testutil"
 )
 
 func TestMerge(t *testing.T) {
@@ -11,10 +11,10 @@ func TestMerge(t *testing.T) {
 	map2 := map[string]string{"key2": "value3", "key4": "value4"}
 	map3 := map[string]string{"key5": "value5"}
 	merged := Merge(map1, map2, map3)
-	assert.Equal(t, 4, len(merged))
-	assert.Equal(t, "value1", merged["key1"])
-	assert.Equal(t, "value3", merged["key2"])
-	assert.Equal(t, "value4", merged["key4"])
-	assert.Equal(t, "value5", merged["key5"])
+	testutil.Equal(t, len(merged), 4)
+	testutil.Equal(t, merged["key1"], "value1")
+	testutil.Equal(t, merged["key2"], "value3")
+	testutil.Equal(t, merged["key4"], "value4")
+	testutil.Equal(t, merged["key5"], "value5")
 	// TODO(dburger): could assert original maps unchanged
 }

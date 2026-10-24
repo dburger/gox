@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/dburger/gox/internal/testutil"
 )
 
 func makeDeque() *Deque[int] {
@@ -20,56 +20,56 @@ func makeDeque() *Deque[int] {
 func TestDeque_PeekFirst(t *testing.T) {
 	d := makeDeque()
 	val, ok := d.PeekFirst()
-	assert.True(t, ok)
-	assert.Equal(t, 1, val)
+	testutil.Equal(t, ok, true)
+	testutil.Equal(t, val, 1)
 	val, ok = d.PeekLast()
-	assert.True(t, ok)
-	assert.Equal(t, 5, val)
+	testutil.Equal(t, ok, true)
+	testutil.Equal(t, val, 5)
 }
 
 func TestDeque_PeekLast(t *testing.T) {
 	d := makeDeque()
 	val, ok := d.PeekLast()
-	assert.True(t, ok)
-	assert.Equal(t, 5, val)
+	testutil.Equal(t, ok, true)
+	testutil.Equal(t, val, 5)
 }
 
 func TestDeque_RemoveFirst(t *testing.T) {
 	d := makeDeque()
 	val, ok := d.RemoveFirst()
-	assert.True(t, ok)
-	assert.Equal(t, 1, val)
-	assert.Equal(t, 4, d.Len())
+	testutil.Equal(t, ok, true)
+	testutil.Equal(t, val, 1)
+	testutil.Equal(t, d.Len(), 4)
 }
 
 func TestDeque_RemoveLast(t *testing.T) {
 	d := makeDeque()
 	val, ok := d.RemoveLast()
-	assert.True(t, ok)
-	assert.Equal(t, 5, val)
-	assert.Equal(t, 4, d.Len())
+	testutil.Equal(t, ok, true)
+	testutil.Equal(t, val, 5)
+	testutil.Equal(t, d.Len(), 4)
 }
 
 func TestDeque_IsEmpty(t *testing.T) {
 	d := makeDeque()
-	assert.False(t, d.IsEmpty())
+	testutil.Equal(t, d.IsEmpty(), false)
 	d.RemoveFirst()
 	d.RemoveLast()
-	assert.Equal(t, 3, d.Len())
+	testutil.Equal(t, d.Len(), 3)
 	d.RemoveFirst()
 	d.RemoveLast()
 	d.RemoveFirst()
-	assert.True(t, d.IsEmpty())
+	testutil.Equal(t, d.IsEmpty(), true)
 }
 
 func TestDeque_ZeroValue(t *testing.T) {
 	var d Deque[int]
-	assert.True(t, d.IsEmpty())
-	assert.Equal(t, 0, d.Len())
+	testutil.Equal(t, d.IsEmpty(), true)
+	testutil.Equal(t, d.Len(), 0)
 	for _, f := range []func() (int, bool){d.PeekFirst, d.PeekLast, d.RemoveFirst, d.RemoveLast} {
 		v, ok := f()
-		assert.False(t, ok)
-		assert.Equal(t, 0, v)
+		testutil.Equal(t, ok, false)
+		testutil.Equal(t, v, 0)
 	}
 	for range d.All() {
 		t.Error("iterated over an element of an empty Deque")
@@ -77,15 +77,15 @@ func TestDeque_ZeroValue(t *testing.T) {
 
 	d.AddLast(2)
 	d.AddFirst(1)
-	assert.Equal(t, []int{1, 2}, slices.Collect(d.All()))
+	testutil.EqualSlices(t, slices.Collect(d.All()), []int{1, 2})
 	v, ok := d.RemoveLast()
-	assert.True(t, ok)
-	assert.Equal(t, 2, v)
+	testutil.Equal(t, ok, true)
+	testutil.Equal(t, v, 2)
 }
 
 func TestDeque_All(t *testing.T) {
 	d := makeDeque()
-	assert.Equal(t, []int{1, 2, 3, 4, 5}, slices.Collect(d.All()))
+	testutil.EqualSlices(t, slices.Collect(d.All()), []int{1, 2, 3, 4, 5})
 	var first []int
 	for v := range d.All() {
 		first = append(first, v)
@@ -93,5 +93,5 @@ func TestDeque_All(t *testing.T) {
 			break
 		}
 	}
-	assert.Equal(t, []int{1, 2}, first)
+	testutil.EqualSlices(t, first, []int{1, 2})
 }
